@@ -1,3 +1,18 @@
 page-home {
+    #empty-message{
+        text-align: center;
+        font-size: 16px;
+        color: color($colors,primary);
+        margin-top: 32px;
 
+        span{
+            margin-top: 16px;
+            text-transform: uppercase;
+            color: color($colors,secondary);
+        }
+    }
+
+    #fab-scroll-top{
+        position: fixed;
+    }
 }

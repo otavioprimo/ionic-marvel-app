@@ -1,14 +1,81 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>
-      Ionic Blank
+      Marvel Explorer
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content padding #container (ionScroll)="checkScroll($event)">
+  <ion-searchbar (ionInput)="getHeroes($event)" shoCancelButton="true" animated="true" autocorrect="on" autocomplete="on" debounce="400"></ion-searchbar>
+
+  <ion-spinner id="spinner" *ngIf="isLoading;else content"></ion-spinner>
+
+  <ng-template #content>
+
+    <div *ngIf="error == false">
+      <div *ngIf="heroes.length > 0">
+
+        <ion-list>
+
+          <ion-card *ngFor="let h of heroes;let i = index" [attr.data-index]="i" [ngClass]="i%2 == 0 ? 'animate-left-to-right':'animate-right-to-left'">
+
+            <ion-item>
+              <h2 text-wrap>{{h.name}}</h2>
+              <p>Last Update: {{h.modified | date}}</p>
+            </ion-item>
+
+            <img [defaultImage]="placeholderImage" [lazyLoad]="h.thumbnail.path +'.'+ h.thumbnail.extension" [scrollObservable]="container.ionScroll">
+
+            <ion-card-content>
+              <p>{{h.description}}</p>
+            </ion-card-content>
+
+            <ion-row>
+              <ion-col center text-center>
+                <ion-note color="secondary">
+                  {{h.series.available}} Series
+                </ion-note>
+              </ion-col>
+              <ion-col center text-center>
+                <ion-note color="secondary">
+                  {{h.comics.available}} Comics
+                </ion-note>
+              </ion-col>
+              <ion-col center text-center>
+                <ion-note color="secondary">
+                  {{h.stories.available}} Stories
+                </ion-note>
+              </ion-col>
+            </ion-row>
+
+          </ion-card>
+        </ion-list>
+
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </div>
+
+      <div *ngIf="heroes.length == 0">
+        <div id="empty-message">
+          <p>No results for
+            <br>
+            <span>{{name}}</span>
+          </p>
+        </div>
+      </div>
+
+      <ion-fab right bottom id="fab-scroll-top" class="fade-in" *ngIf="showScrollTopButton">
+        <button ion-fab color="secondary" (click)="scrollToTop()">
+          <ion-icon name="arrow-up"></ion-icon>
+        </button>
+      </ion-fab>
+
+    </div>
+
+    <!-- <div *ngIf="error == true">
+      <p>{{error}}</p>
+    </div> -->
+  </ng-template>
 </ion-content>
